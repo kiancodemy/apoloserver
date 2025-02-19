@@ -15,9 +15,10 @@ export const typeDefs = `#graphql
     }
 
   type User{
-    id:ID!
-    name:String!,
-    email:String!,
+    _id:ID!
+    name:String!
+    email:String!
+    
 
   }
 
@@ -42,6 +43,15 @@ export const typeDefs = `#graphql
     products:[Products!]!
 
    }
+   input filter{
+    page:String
+    quantity:String
+    price:String
+    gte:String
+    lte:String
+    onSale:Boolean
+
+   }
    input categodyinput{
    
     name:String!
@@ -52,18 +62,25 @@ export const typeDefs = `#graphql
     Products(filter:filter):[Products]
     Product(id:String!):Products!
     categories:[category!]!
+    category(id:String!):category
    
     }
 
   input userdata {
-    name:String,
-    email:String,
+    name:String!
+    email:String!
+    password:String!
+  }
+  input login {
+    
+    email:String
     password:String
   }
 
 
   type Mutation {
-    signup(data:userdata):User!
+    signup(data:userdata!):User!
+    login(data:login!):User!
        
     addCategory(input:categodyinput!):category!
   }

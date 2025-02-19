@@ -1,10 +1,16 @@
+import { GraphQLError } from "graphql";
+
 export const Mutation = {
-  signup: async (parent, { data: { name, email, password } }, context) => {
+  signup: async (parent, { data }, { User }) => {
     try {
-      if (!name || !email || !password) {
-        throw new Error("fill all the inputs");
+      if (!data || !data.name || !data.email || !data.password) {
+        throw new GraphQLError("fill all the sections");
       }
-    } catch (err) {}
+      const user = await User.create(data);
+      return user;
+    } catch (err) {
+      throw new GraphQLError(err);
+    }
   },
   addCategory: (parent, { input }, { categories }) => {
     const neww = { id: uuidv4(), name: input.name };

@@ -1,25 +1,44 @@
 export const Query = {
-  Products: async (_, { filter }, { all }) => {
+  Products: async (_, args, { Product }) => {
     try {
-      let products = all;
-      if (filter) {
-        products = products.filter((item) => item.onSale === filter.onSale);
-      }
-      return products;
+      let all = await Product.find();
+
+      return all;
     } catch (err) {
       throw new GraphQLError(err);
     }
   },
-  Product: (_, args, { all }) => {
+  Product: async (_, args, { Product }) => {
     const id = args.id;
-    const find = all.find((item) => item.id === id);
-    if (find) {
+    try {
+      if (!id) {
+        throw new GraphQLError("no id");
+      }
+      const find = await Product.findOne({ id });
       return find;
-    } else {
-      return null;
+    } catch (err) {
+      throw new GraphQLError(err);
     }
   },
-  categories: async (_, args, { categories }) => {
-    return categories;
+  categories: async (_, args, { Category }) => {
+    try {
+      const find = await Category.find();
+      return find;
+    } catch (err) {
+      throw new GraphQLError(err);
+    }
+  },
+  category: async (_, args, { Category }) => {
+    try {
+      const id = args.id;
+
+      if (!id) {
+        throw new GraphQLError("send the id please");
+      }
+      const find = await Category.findById(id);
+      return find;
+    } catch (err) {
+      throw new GraphQLError(err);
+    }
   },
 };
