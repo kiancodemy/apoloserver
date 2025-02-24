@@ -6,11 +6,11 @@ export const typeDefs = `#graphql
     description:String!
     quantity:Int!
     price:Float !
-    image:String!
+   
     onSale:Boolean!
     categoryId:ID!
     category:category!
-    reviews:[review]
+    reviews:[review]!
    
     }
 
@@ -44,45 +44,69 @@ export const typeDefs = `#graphql
 
    }
    input filter{
-    page:String
+    
     quantity:String
     price:String
-    gte:String
-    lte:String
-    onSale:Boolean
+    page:String
+    limit:String
+    
 
    }
    input categodyinput{
    
     name:String!
    }
+
+   type status {
+    status:String!
+   }
+
+   type new {
+    length:Int
+    products:[Products]
+   
+
+   }
  
   type Query {
     
-    Products(filter:filter):[Products]
+    Products(filter:filter):new
     Product(id:String!):Products!
     categories:[category!]!
     category(id:String!):category
+    checkauth:status!
    
     }
 
   input userdata {
-    name:String!
-    email:String!
-    password:String!
+    name:String
+    email:String
+    password:String
   }
   input login {
     
-    email:String
-    password:String
+    email:String!
+    password:String!
+    
+  }
+  input newproduct {
+    
+   name:String!
+   description:String
+   price:Int!
+   quantity:Int!
+   categoryId:String!
+    
   }
 
 
   type Mutation {
     signup(data:userdata!):User!
-    login(data:login!):User!
-       
+    login(data:login):User!
+    logout:status!
     addCategory(input:categodyinput!):category!
+    creatproduct(input:newproduct!):Products!
+       
   }
    
 `;

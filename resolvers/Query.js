@@ -1,9 +1,38 @@
+import { GraphQLError } from "graphql";
+import { jwtchecker } from "../connect/jwt.js";
 export const Query = {
-  Products: async (_, args, { Product }) => {
+  Products: async (_, { filter }, { Product }) => {
     try {
-      let all = await Product.find();
+      let all = Product.find();
+      if (filter && filter.price) {
+        all = all.sort({ price: Number(filter.price) });
+      }
+      if (filter && filter.quantity) {
+        all = all.sort({ quantity: Number(filter.quantity) });
+      }
+      let clone = all.clone();
+      const limit = Number(filter?.limit) || 3;
+      const page = Number(filter?.page) || 1;
+      const skip = (page - 1) * limit;
+      const allofCUrrent = await clone.countDocuments();
+      const length = Number(Math.ceil(allofCUrrent / limit));
 
-      return all;
+      all = all.skip(skip).limit(limit);
+      const final = await all;
+
+      return { length, products: final };
+    } catch (err) {
+      throw new GraphQLError(err);
+    }
+  },
+  checkauth: async (_, args, { req }) => {
+    try {
+      const result = await jwtchecker(req);
+      if (!result) {
+        throw new GraphQLError("please login");
+      }
+
+      return { status: "sucess" };
     } catch (err) {
       throw new GraphQLError(err);
     }

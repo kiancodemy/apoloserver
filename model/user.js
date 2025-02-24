@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { validate } from "graphql";
+
 import mongoose from "mongoose";
 const userSchema = new mongoose.Schema(
   {
@@ -10,11 +10,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: function (value) {
-          // Regular expression for basic email validation
           const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-          return emailRegex.test(value); // Check if the email matches the regex
+          return emailRegex.test(value);
         },
-        message: "Please enter a valid email address", // Custom error message if validation fails
+        message: "Please enter a valid email address",
       },
     },
 
@@ -35,15 +34,12 @@ userSchema.pre("save", async function (next) {
     user.password = await bcrypt.hash(user.password, salt); // Hash the password
     next();
   } catch (err) {
-    next(err); // Pass any error to the next middleware
+    next(err);
   }
 });
 
-// Add a method to compare password
-userSchema.methods.comparePassword = async function (password) {
-  const user = this;
-  return bcrypt.compare(password, user.password); // Compare provided password with the stored hashed password
-};
+userSchema.method("comparePass", async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+});
 
-// Create and export the User model
 export const User = mongoose.model("User", userSchema);

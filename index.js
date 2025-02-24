@@ -46,6 +46,8 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req, res }) => {
       return {
+        req,
+        res,
         Product,
         Category,
         Review,

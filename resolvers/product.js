@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 export const Products = {
   reviews: async (parent, args, { Review }) => {
     try {

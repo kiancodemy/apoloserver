@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const productSchema = new Schema (
+const productSchema = new Schema(
   {
     id: {
       type: String,
@@ -14,19 +14,21 @@ const productSchema = new Schema (
     },
     description: {
       type: String,
+      default: "no description",
     },
     quantity: {
       type: Number,
       required: true,
-      min: 0,
+      min: [0, "quantity must be at least 0"],
     },
     price: {
       type: Number,
       required: true,
-      min: 0,
+      min: [0, "price must be at least 0"],
     },
     image: {
       type: String,
+      default: "image",
     },
     onSale: {
       type: Boolean,
